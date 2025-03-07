@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:weather_app/additional_card.dart';
 import 'hourly_weather_card.dart';
@@ -10,12 +11,36 @@ class WeatherApp extends StatefulWidget{
   _WeatherAppState createState() => _WeatherAppState();
 }
 class _WeatherAppState extends State<WeatherApp>{
+  // do declare here
+  double currTemp = double.infinity;
+  bool isLoading = false;
+
+  String convertToC(double k){
+    return (k - 273.15).toStringAsFixed(2);
+  }
+
   Future getCurrentWeather () async{
-    String cityName = "London";
-    final result = await http.get(
-      Uri.parse('$BASE_URL?q=$cityName&APPID=$API_KEY'), // add the api url here
-    );
-    print(result.body);
+    try {
+      // đang load
+      isLoading = true;
+      String cityName = "Ho%20Chi%20Minh%20City";
+      final result = await http.get(
+        Uri.parse('$BASE_URL?q=$cityName&APPID=$API_KEY'), // add the api url here
+      );
+      final data = jsonDecode(result.body);
+      if (data['cod'] != '200'){
+        throw "Something went wrong";
+      }
+      setState(() {
+        currTemp = data['list'][0]['main']['temp'];
+        // load xông gồi
+        isLoading = false;
+      });
+      
+    } catch(e){
+      throw e.toString();
+    }
+    
   }
 
   @override
@@ -47,7 +72,7 @@ class _WeatherAppState extends State<WeatherApp>{
           IconButton(icon: Icon(Icons.refresh_rounded), onPressed: ()=>{}),
         ]
       ),
-      body: Padding(
+      body: isLoading /*hoặc currTemp == double.infinity*/ ? CircularProgressIndicator() : Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           //crossAxisAlignment: CrossAxisAlignment.start, // can replace Align widget
@@ -65,7 +90,7 @@ class _WeatherAppState extends State<WeatherApp>{
                   child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(children: [
-                      Text("32°C", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),),
+                      Text("${convertToC(currTemp)}°C", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),),
                       const SizedBox(height: 16,),
                       Icon(Icons.cloud, size: 64),
                       const SizedBox(height: 16,),
