@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'package:weather_app/additional_card.dart';
+import 'hourly_weather_card.dart';
 import 'package:flutter/material.dart';
 
 class WeatherApp extends StatefulWidget{
@@ -64,46 +65,34 @@ class _WeatherAppState extends State<WeatherApp>{
             child: Text("Weather Forecast", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),)
           ),
           const SizedBox(height: 12),
-          SingleChildScrollView(
+          const SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: [
-            HourlyWeatherCard(),
-            HourlyWeatherCard(),
-            HourlyWeatherCard(),
-            HourlyWeatherCard(),
-            HourlyWeatherCard(),
+            HourlyWeatherCard(time: "09:00", icon: Icons.sunny, temp: 30),
+            HourlyWeatherCard(time: "12:00", icon: Icons.cloud, temp: 34),
+            HourlyWeatherCard(time: "15:00", icon: Icons.cloud, temp: 28),
+            HourlyWeatherCard(time: "18:00", icon: Icons.beach_access_sharp, temp: 21),
+            HourlyWeatherCard(time: "21:00", icon: Icons.nightlight_round, temp: 23),
             ],),
           ),
-          Placeholder(
-            fallbackHeight: 150,
-            fallbackWidth: 200,
+          const SizedBox(height: 14),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text("Additional Information", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),)
           ),
-          const SizedBox(height: 20),
-          Placeholder(
-            fallbackHeight: 150,
-            fallbackWidth: 200,
-          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            AddtionalCard(icon: Icons.water_drop, string: "Humidity", value: 90),
+            AddtionalCard(icon: Icons.air, string: "Wind Speed", value: 7.76),
+            AddtionalCard(icon: Icons.beach_access, string: "Pressure", value: 1006),
+          ],),
         ],),
       )
     );
   }
 }
 
-class HourlyWeatherCard extends StatelessWidget{
-  const HourlyWeatherCard({super.key});
-  Widget build(BuildContext context){
-    return Card(
-    child: Container(
-      padding: const EdgeInsets.all(10),
-      width: 100,
-      child: Column(children: [
-        Text("09:00", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,), ),
-        const SizedBox(height: 6,),
-        Icon(Icons.cloud, size: 32),  
-        const SizedBox(height: 6,),
-        Text("32°C", style: TextStyle(fontSize: 16),)
-      ],),
-    )
-  );
-  }
-}
+
+
