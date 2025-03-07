@@ -2,12 +2,30 @@ import 'dart:ui';
 import 'package:weather_app/additional_card.dart';
 import 'hourly_weather_card.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:weather_app/SECRET_KEYS.dart';
 
 class WeatherApp extends StatefulWidget{
   WeatherApp({super.key});
   _WeatherAppState createState() => _WeatherAppState();
 }
 class _WeatherAppState extends State<WeatherApp>{
+  Future getCurrentWeather () async{
+    String cityName = "London";
+    final result = await http.get(
+      Uri.parse('$BASE_URL?q=$cityName&APPID=$API_KEY'), // add the api url here
+    );
+    print(result.body);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentWeather();
+  }
+
+  @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(

@@ -8,6 +8,7 @@ class AddtionalCard extends StatelessWidget{
   // constructor
   const AddtionalCard({super.key, required this.icon, required this.string, required this.value});
 
+  @override
   Widget build(BuildContext context){
     return Container(
       padding: const EdgeInsets.all(12),

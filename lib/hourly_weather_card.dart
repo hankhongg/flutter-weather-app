@@ -5,6 +5,7 @@ class HourlyWeatherCard extends StatelessWidget{
   final IconData icon;
   final double temp;
   const HourlyWeatherCard({super.key, required this.time, required this.icon, required this.temp});
+  @override
   Widget build(BuildContext context){
     return Card(
     child: Container(
