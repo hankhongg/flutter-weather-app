@@ -4,7 +4,7 @@ class AddtionalCard extends StatelessWidget{
   // required final things!
   final IconData icon;
   final String string;
-  final double value;
+  final int value;
   // constructor
   const AddtionalCard({super.key, required this.icon, required this.string, required this.value});
 
