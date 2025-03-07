@@ -58,13 +58,22 @@ class _WeatherAppState extends State<WeatherApp>{
               )
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           Align(
             alignment: Alignment.centerLeft,
             child: Text("Weather Forecast", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),)
           ),
-          
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [
+            HourlyWeatherCard(),
+            HourlyWeatherCard(),
+            HourlyWeatherCard(),
+            HourlyWeatherCard(),
+            HourlyWeatherCard(),
+            ],),
+          ),
           Placeholder(
             fallbackHeight: 150,
             fallbackWidth: 200,
@@ -77,5 +86,24 @@ class _WeatherAppState extends State<WeatherApp>{
         ],),
       )
     );
+  }
+}
+
+class HourlyWeatherCard extends StatelessWidget{
+  const HourlyWeatherCard({super.key});
+  Widget build(BuildContext context){
+    return Card(
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      width: 100,
+      child: Column(children: [
+        Text("09:00", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,), ),
+        const SizedBox(height: 6,),
+        Icon(Icons.cloud, size: 32),  
+        const SizedBox(height: 6,),
+        Text("32°C", style: TextStyle(fontSize: 16),)
+      ],),
+    )
+  );
   }
 }
