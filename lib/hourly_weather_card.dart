@@ -12,7 +12,7 @@ class HourlyWeatherCard extends StatelessWidget{
       padding: const EdgeInsets.all(10),
       width: 100,
       child: Column(children: [
-        Text(time, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,), ),
+        Text(time, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,),maxLines: 1, ),
         const SizedBox(height: 6,),
         Icon(icon, size: 32),  
         const SizedBox(height: 6,),

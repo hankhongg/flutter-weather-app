@@ -6,6 +6,7 @@ import 'hourly_weather_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/SECRET_KEYS.dart';
+import 'package:intl/intl.dart';
 
 class WeatherApp extends StatefulWidget{
   WeatherApp({super.key});
@@ -13,7 +14,7 @@ class WeatherApp extends StatefulWidget{
 }
 class _WeatherAppState extends State<WeatherApp>{
   // do declare here
-
+  Future<Map<String, dynamic>>? weather;
   /* ---purely optional
 
   double currTemp = double.infinity;
@@ -24,6 +25,7 @@ class _WeatherAppState extends State<WeatherApp>{
   }
 
   Future<Map<String, dynamic>> getCurrentWeather () async{
+    
     try {
       // đang load
       /*isLoading = true;*/ // --- purely optional
@@ -55,7 +57,7 @@ class _WeatherAppState extends State<WeatherApp>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCurrentWeather();
+    weather = getCurrentWeather();
   }
 
   @override
@@ -77,12 +79,16 @@ class _WeatherAppState extends State<WeatherApp>{
           //   onTap:() => print("Refresh"),
           //   child: Icon(Icons.refresh_rounded),
           // )
-          IconButton(icon: Icon(Icons.refresh_rounded), onPressed: ()=>{}),
+          IconButton(icon: Icon(Icons.refresh_rounded), onPressed: ()=>{
+            setState(() { // nhớ setState
+              weather = getCurrentWeather();
+            })
+          }),
         ]
       ),
       body: /*isLoading hoặc currTemp == double.infinity ? CircularProgressIndicator() : */ // ---purely optional we can use Future builder instead
       FutureBuilder(
-        future: getCurrentWeather(),
+        future: weather,
         builder:(context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){
             return const Center(child: CircularProgressIndicator.adaptive(),);
@@ -137,19 +143,41 @@ class _WeatherAppState extends State<WeatherApp>{
             const SizedBox(height: 14),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text("Weather Forecast", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),)
+              child: Text("Hourly Forecast", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),)
             ),
             const SizedBox(height: 12),
-            const SingleChildScrollView(
+
+            // singlechildscrollview => load all at once => performance issue
+          /*
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(children: [
-              HourlyWeatherCard(time: "09:00", icon: Icons.sunny, temp: 30),
-              HourlyWeatherCard(time: "12:00", icon: Icons.cloud, temp: 34),
-              HourlyWeatherCard(time: "15:00", icon: Icons.cloud, temp: 28),
-              HourlyWeatherCard(time: "18:00", icon: Icons.beach_access_sharp, temp: 21),
-              HourlyWeatherCard(time: "21:00", icon: Icons.nightlight_round, temp: 23),
+              for (int i = 0; i < 5; i++) HourlyWeatherCard(
+                time: DateFormat.jm().format(DateTime.parse(data['list'][i+1]['dt_txt'])),
+                temp: double.parse(convertToC(data['list'][i+1]['main']['temp'])), 
+                icon: data['list'][i+1]['weather'][0]['main'] == 'Clouds' ? Icons.cloud : currStatus == 'Rain' ? Icons.thunderstorm : Icons.sunny,
+                )
               ],),
             ),
+          */
+             // listview builder => load on demand => better performance
+            
+            SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  final hourlyForecast = data['list'][index+1];
+                  return HourlyWeatherCard(
+                    time: DateFormat.jm().format(DateTime.parse(hourlyForecast['dt_txt'])),
+                    temp: double.parse(convertToC(hourlyForecast['main']['temp'])), 
+                    icon: hourlyForecast['weather'][0]['main'] == 'Clouds' ? Icons.cloud : currStatus == 'Rain' ? Icons.thunderstorm : Icons.sunny,
+                  );
+                }
+              ),
+            ),
+
             const SizedBox(height: 14),
             Align(
               alignment: Alignment.centerLeft,
